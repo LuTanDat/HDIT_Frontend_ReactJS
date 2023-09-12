@@ -3,10 +3,22 @@ import { connect } from "react-redux";
 import './HomeHeader.scss';
 // import logo from '../../assets/logo.svg'; <img src={logo} />
 import { FormattedMessage } from 'react-intl'; // chuyen doi ngon ngu duoc cau hinh trong folder src/translations
+import { LANGUAGES } from '../../utils'
+
+import { changeLanguageApp } from '../../store/actions'
 
 class HomeHeader extends Component {
+
+    changeLanguage = (language) => {
+        //fire redux event: actions
+        this.props.changeLanguageAppRedux(language);
+
+    }
+
     render() {
-        console.log(this.props);
+        // console.log(this.props);
+        let language = this.props.language;
+
         return (
             <React.Fragment>
                 <div className="home-header-container">
@@ -36,8 +48,16 @@ class HomeHeader extends Component {
                         </div>
                         <div className="right-content">
                             <div className="support"><i className="fas fa-question-circle"></i><FormattedMessage id="home-header.support" /></div>
-                            <div className="language-vi">VN</div>
-                            <div className="language-en">EN</div>
+                            <div className={language === LANGUAGES.VI ? "language-vi active" : "language-vi"}>
+                                <span onClick={() => this.changeLanguage(LANGUAGES.VI)}>
+                                    VN
+                                </span>
+                            </div>
+                            <div className={language === LANGUAGES.EN ? "language-en active" : "language-en"}>
+                                <span onClick={() => this.changeLanguage(LANGUAGES.EN)}>
+                                    EN
+                                </span>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -86,7 +106,7 @@ class HomeHeader extends Component {
     }
 }
 
-// ham se tra ve gia tri trong props
+// get state redux trong props
 const mapStateToProps = (state) => {
     return {
         language: state.app.language,
@@ -94,8 +114,11 @@ const mapStateToProps = (state) => {
     };
 };
 
+// redirect actions redux trong props
 const mapDispatchToProps = (dispatch) => {
-    return {};
+    return {
+        changeLanguageAppRedux: (language) => dispatch(changeLanguageApp(language))
+    };
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(HomeHeader);
