@@ -6,6 +6,7 @@ import Navigator from "../../components/Navigator";
 import { adminMenu } from "./menuApp";
 import "./Header.scss";
 import { LANGUAGES } from "../../utils";
+import { FormattedMessage } from 'react-intl';
 
 class Header extends Component {
 
@@ -15,8 +16,8 @@ class Header extends Component {
   }
 
   render() {
-    const { processLogout } = this.props;
-    let language = this.props.language;
+
+    const { processLogout, language, userInfo } = this.props;
 
     return (
       <div className="header-container">
@@ -26,8 +27,17 @@ class Header extends Component {
         </div>
 
         <div className="languages">
-          <span className={language === LANGUAGES.VI ? "language-vi active" : "language-vi"} onClick={() => this.changeLanguage(LANGUAGES.VI)}>VN</span>
-          <span className={language === LANGUAGES.EN ? "language-en active" : "language-en"} onClick={() => this.changeLanguage(LANGUAGES.EN)}>EN</span>
+          <span className="welcome">
+            <FormattedMessage id="home-header.welcome" />
+            {userInfo && userInfo.firstName ? userInfo.firstName : ''}
+          </span>
+
+          <span className={language === LANGUAGES.VI ? "language-vi active" : "language-vi"}
+            onClick={() => this.changeLanguage(LANGUAGES.VI)}>VN
+          </span>
+          <span className={language === LANGUAGES.EN ? "language-en active" : "language-en"}
+            onClick={() => this.changeLanguage(LANGUAGES.EN)}>EN
+          </span>
 
           {/* nút logout */}
           <div className="btn btn-logout" onClick={processLogout} title="Log out">
@@ -45,6 +55,7 @@ const mapStateToProps = (state) => {
   return {
     language: state.app.language,
     isLoggedIn: state.user.isLoggedIn,
+    userInfo: state.user.userInfo,
   };
 };
 
