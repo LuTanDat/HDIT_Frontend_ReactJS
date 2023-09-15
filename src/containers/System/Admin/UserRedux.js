@@ -3,7 +3,7 @@ import { FormattedMessage } from 'react-intl';
 import { connect } from 'react-redux';
 import { getAllCodeService } from '../../../services/userService'
 import { LANGUAGES } from '../../../utils'
-
+import * as actions from '../../../store/actions'
 
 class UserRedux extends Component {
 
@@ -18,54 +18,70 @@ class UserRedux extends Component {
     }
 
     async componentDidMount() {
-        await this.getAllCodeGenderService();
-        await this.getAllCodePositionService();
-        await this.getAllCodeRoleService();
+
+        await this.props.getGenderStart();
+
+        // await this.getAllCodeGenderService();
+        // await this.getAllCodePositionService();
+        // await this.getAllCodeRoleService();
     }
 
-    getAllCodeGenderService = async () => {
-        try {
-            let res = await getAllCodeService('gender');
-            if (res && res.errCode === 0) {
-                this.setState({
-                    genderArr: res.data,
-                })
-            }
-        } catch (e) {
-            console.log(e);
+    // getAllCodeGenderService = async () => {
+    //     try {
+    //         let res = await getAllCodeService('gender');
+    //         if (res && res.errCode === 0) {
+    //             this.setState({
+    //                 genderArr: res.data,
+    //             })
+    //         }
+    //     } catch (e) {
+    //         console.log(e);
+    //     }
+    // }
+
+    // getAllCodePositionService = async () => {
+    //     try {
+    //         let res = await getAllCodeService('position');
+    //         if (res && res.errCode === 0) {
+    //             this.setState({
+    //                 positionArr: res.data,
+    //             })
+    //         }
+    //     } catch (e) {
+    //         console.log(e);
+    //     }
+    // }
+
+    // getAllCodeRoleService = async () => {
+    //     try {
+    //         let res = await getAllCodeService('role');
+    //         if (res && res.errCode === 0) {
+    //             this.setState({
+    //                 roleArr: res.data,
+    //             })
+    //         }
+    //     } catch (e) {
+    //         console.log(e);
+    //     }
+    // }
+
+    componentDidUpdate(prevProps, prevState, snapshot) {
+
+        // so sanh gia tri cua qua khu (prevProps) va hien tai(this)
+        // render() chay => componentDidUpdate() chay
+
+        // life cycle 1: [] vs [3]
+        // life cycle 2:[3] vs [3]
+        if (prevProps.genderRedux !== this.props.genderRedux) {
+            this.setState({
+                genderArr: this.props.genderRedux,
+            })
         }
     }
-
-    getAllCodePositionService = async () => {
-        try {
-            let res = await getAllCodeService('position');
-            if (res && res.errCode === 0) {
-                this.setState({
-                    positionArr: res.data,
-                })
-            }
-        } catch (e) {
-            console.log(e);
-        }
-    }
-
-    getAllCodeRoleService = async () => {
-        try {
-            let res = await getAllCodeService('role');
-            if (res && res.errCode === 0) {
-                this.setState({
-                    roleArr: res.data,
-                })
-            }
-        } catch (e) {
-            console.log(e);
-        }
-    }
-
 
     render() {
+        console.log('check gender redux: ', this.props.genderRedux);
 
-        // console.log('check gender: ', this.state);
         let genders = this.state.genderArr;
         let positions = this.state.positionArr;
         let roles = this.state.roleArr;
@@ -107,7 +123,7 @@ class UserRedux extends Component {
                             </div>
                             <div className='col-3'>
                                 <label><FormattedMessage id="manage-user.gender" /></label>
-                                <select class="form-select">
+                                <select className="form-select">
                                     {genders && genders.length > 0 &&
                                         genders.map((item, index) => {
                                             return (
@@ -121,7 +137,7 @@ class UserRedux extends Component {
                             </div>
                             <div className='col-3'>
                                 <label><FormattedMessage id="manage-user.position" /></label>
-                                <select class="form-select">
+                                <select className="form-select">
                                     {positions && positions.length > 0 &&
                                         positions.map((item, index) => {
                                             return (
@@ -135,7 +151,7 @@ class UserRedux extends Component {
                             </div>
                             <div className='col-3'>
                                 <label><FormattedMessage id="manage-user.role" /></label>
-                                <select class="form-select">
+                                <select className="form-select">
                                     {roles && roles.length > 0 &&
                                         roles.map((item, index) => {
                                             return (
@@ -166,11 +182,16 @@ class UserRedux extends Component {
 const mapStateToProps = state => {
     return {
         language: state.app.language,
+        genderRedux: state.admin.genders
     };
 };
 
 const mapDispatchToProps = dispatch => {
     return {
+        getGenderStart: () => dispatch(actions.fetchGenderStart()),
+
+        // processLogout: () => dispatch(actions.processLogout()),
+        // changeLanguageAppRedux: (language) => dispatch(actions.changeLanguageApp(language))
     };
 };
 
